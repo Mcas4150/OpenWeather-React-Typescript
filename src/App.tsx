@@ -1,12 +1,14 @@
 import React, {useState, useEffect} from 'react';
 import './App.css';
 import { Card } from "@material-ui/core";
-// import Weather from "./weather";
+import styled from "styled-components";
+import { API_KEY } from "./utils/setAuthToken";
+
 // import { Service } from "./types/service";
 // import openWeather from "./components/openWeather"
-// import Forecast from "./components/forecast";
+
 import { format, fromUnixTime } from "date-fns";
-// import { Weather } from "./types/weather";
+
 
 
 // interface State {
@@ -30,7 +32,6 @@ const [forecast, setForecast] = useState<any>('')
 
 
 
-const API_KEY = "903f3bef731426a6225b7cac7ff165ac";
 
 const getCurrentWeather = async () => {
   const response = await fetch(`http://api.openweathermap.org/data/2.5/weather?q=London&units=metric&APPID=${API_KEY}`);
@@ -47,11 +48,8 @@ const getForecast = async () => {
     let weatherList = data.list;
     let fiveDayForecast : any[] = [];
     for (let i = 0; i < weatherList.length; i += 8) {
-      let date = fromUnixTime(weatherList[i].dt)
-      console.log(weatherList[i].dt)
+      let date = fromUnixTime(weatherList[i].dt);
       let day = format(date, 'EEEEEE');
-      //  let date = weatherList[i].dt.format("dddd");
-      // let date = "sund"
       let weatherIcon = weatherList[i].weather[0].icon;
       let Temp = Math.floor(weatherList[i].main.temp);
 
@@ -77,27 +75,45 @@ const renderFiveDayForecast = () => {
   if (forecast){
   return forecast.map((day: string) => {
     return(
-      <div key={day[0]} className="daily">
+      <Day key={day[0]}>
         <p>{day[0]}</p>
         <img src={`http://openweathermap.org/img/wn/${day[1]}.png`} alt="weatherIcon"/>
         <p id="Temp">{day[2]}<span>&deg;</span><span>C</span></p>
-    </div>
+    </Day>
     );
   })};
 }
 
   return (
-    <div style={{display:"flex", justifyContent: "center"}}>
+    <WeatherContainer>
 
 {weather &&
-<Card><div style={{display: "flex", justifyContent: "center", flexDirection: "row", alignContent:"center"}}>{weather}
-{renderFiveDayForecast()}
-</div></Card>
+<WeatherCard>
+  {weather}
+  {renderFiveDayForecast()}
+</WeatherCard>
 }
-    </div>
+    </WeatherContainer>
   )
 
 }
 
+const WeatherContainer = styled.div`
+  display: flex;
+  justify-content: center
+`;
+
+const Day = styled.div`
+ display: flex;
+ align-items: center;
+ flex-direction: column
+`;
+
+const WeatherCard = styled(Card)`
+display:flex;
+justifyContent: center;
+flexDirection: row;
+alignContent: center;
+`;
 
 export default App;
