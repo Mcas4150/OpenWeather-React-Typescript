@@ -1,127 +1,148 @@
-import React, {useState, useEffect} from 'react';
-import './App.css';
+import React, { useState, useEffect } from "react";
+import "./App.css";
 import { Card } from "@material-ui/core";
 import styled from "styled-components";
 import { API_KEY, FORECAST_URL, WEATHER_URL } from "./utils/setAuthToken";
 import { format, fromUnixTime } from "date-fns";
 
-// import { Service } from "./types/service";
-// import openWeather from "./components/openWeather"
-
-// interface State {
-//   temp: {[key: string] : string}
-// }
+interface State {
+  temp: { [key: string]: string };
+}
 export interface AllWeather {
   // fiveDays: string[];
   // temp: string
 }
 
-const App: React.FunctionComponent<AllWeather> = props => {
-const [weather, setWeather] = useState<any>('');
-const [forecast, setForecast] = useState<any>('')
-//  const [weatherData, setWeatherData] = useState<Service<AllWeather>>({
-//    status: "loading"
-//  })
-
-const parseDate = (unixDate: number) =>{
-  let date = fromUnixTime(unixDate);
-  let day = format(date, 'EEEE');
-  return day
+interface Weather {
+  // temp: number,
+  // description: string,
+  // city: string,
+  // day: string
 }
 
-const getCurrentWeather = async () => {
-  const response = await fetch(`${WEATHER_URL}?q=London&units=metric&APPID=${API_KEY}`);
-  const data = await response.json();
-  const temp = data.main.temp
-  const [weather] = data.weather;
-  const description = weather.description;
-  let day = parseDate(data.dt)
-  console.log(description)
-  const icon = weather.icon
-  setWeather([temp, description, icon, day])
+const initialWeatherState: Weather = {
+  temp: 0,
+  description: "",
+  city: "",
+  day: "",
+};
 
-}
+const App: React.FunctionComponent<AllWeather> = (props) => {
+  const [weather, setWeather] = useState<Weather>(initialWeatherState);
+  const [forecast, setForecast] = useState<any>("");
+  //  const [weatherData, setWeatherData] = useState<Service<AllWeather>>({
+  //    status: "loading"
+  //  })
 
-const getForecast = async () => {
-  const response = await fetch(`${FORECAST_URL}?q=London&units=metric&APPID=${API_KEY}`);
-  const data = await response.json();
-  if(data.list){
-    let weatherList = data.list;
-    let fiveDayForecast : any[] = [];
-    for (let i = 0; i < weatherList.length; i += 8) {
-      let date = fromUnixTime(weatherList[i].dt);
-      let day = format(date, 'EEEEEE');
-      let weatherIcon = weatherList[i].weather[0].icon;
-      let Temp = Math.floor(weatherList[i].main.temp);
+  const parseDate = (unixDate: number) => {
+    let date = fromUnixTime(unixDate);
+    let day = format(date, "EEEE");
+    return day;
+  };
 
-      fiveDayForecast.push([day, weatherIcon, Temp]);
-    }
-    setForecast(fiveDayForecast)
-  }
-}
-
-
-useEffect(()=> {
-  getCurrentWeather();
-  getForecast();
-}, []);
-
-
-const renderFiveDayForecast = () => {
-  if (forecast){
-  return forecast.map((day: string) => {
-    return(
-      <Day key={day[0]}>
-        <p>{day[0]}</p>
-        <img src={`http://openweathermap.org/img/wn/${day[1]}.png`} alt="weatherIcon"/>
-        <p id="Temp">{day[2]}<span>&deg;</span><span>C</span></p>
-    </Day>
+  const getCurrentWeather = async () => {
+    const response = await fetch(
+      `${WEATHER_URL}?q=London&units=metric&APPID=${API_KEY}`
     );
-  })};
-}
+    const data = await response.json();
+    const temp = data.main.temp;
+    let currentWeather: any[] = [];
+    const [weather] = data.weather;
+    const description = weather.description;
+    const day = parseDate(data.dt);
+    const city = data.name;
+    console.log(description);
+    const icon = weather.icon;
+    currentWeather.push([temp, description, day, city]);
+    setWeather({ ...weather, currentWeather });
+  };
+
+  const getForecast = async () => {
+    const response = await fetch(
+      `${FORECAST_URL}?q=London&units=metric&APPID=${API_KEY}`
+    );
+    const data = await response.json();
+    if (data.list) {
+      let weatherList = data.list;
+      let fiveDayForecast: any[] = [];
+      for (let i = 0; i < weatherList.length; i += 8) {
+        let date = fromUnixTime(weatherList[i].dt);
+        let day = format(date, "EEEEEE");
+        let weatherIcon = weatherList[i].weather[0].icon;
+        let Temp = Math.floor(weatherList[i].main.temp);
+
+        fiveDayForecast.push([day, weatherIcon, Temp]);
+      }
+      setForecast(fiveDayForecast);
+    }
+  };
+
+  useEffect(() => {
+    getCurrentWeather();
+    getForecast();
+  }, []);
+
+  const renderFiveDayForecast = () => {
+    if (forecast) {
+      return forecast.map((day: string) => {
+        return (
+          <Day key={day[0]}>
+            <p>{day[0]}</p>
+            <img
+              src={`http://openweathermap.org/img/wn/${day[1]}.png`}
+              alt="weatherIcon"
+            />
+            <p id="Temp">
+              {day[2]}
+              <span>&deg;</span>
+              <span>C</span>
+            </p>
+          </Day>
+        );
+      });
+    }
+  };
 
   return (
     <WeatherContainer>
+      {weather && (
+        <WeatherCard>
+          <CurrentContainer>{weather}</CurrentContainer>
 
-{weather &&
-<WeatherCard>
-  <CurrentContainer>{weather}
-  </CurrentContainer>
- <ForecastContainer>
-  {renderFiveDayForecast()}
-</ForecastContainer>
-
-</WeatherCard>
-}
+          <ForecastContainer>{renderFiveDayForecast()}</ForecastContainer>
+        </WeatherCard>
+      )}
     </WeatherContainer>
-  )
-
-}
+  );
+};
 
 const Flex = styled.div`
-  display: flex
+  display: flex;
 `;
 
 const WeatherContainer = styled(Flex)`
-  justify-content: center
+  justify-content: center;
 `;
 
 const Day = styled(Flex)`
- align-items: center;
- flex-direction: column
+  align-items: center;
+  flex-direction: column;
 `;
 
 const CurrentContainer = styled(Flex)`
- justify-content: center;
+  justify-content: center;
 `;
 
-const ForecastContainer = styled(Flex)`flex-direction: row`;
+const ForecastContainer = styled(Flex)`
+  flex-direction: row;
+`;
 
 const WeatherCard = styled(Card)`
-display: flex;
-// justify-content: center;
-flex-direction: column;
-align-content: center;
+  display: flex;
+  // justify-content: center;
+  flex-direction: column;
+  align-content: center;
+  padding: 5px;
 `;
 
 export default App;
