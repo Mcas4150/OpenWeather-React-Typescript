@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import './App.css';
+import { Card } from "@material-ui/core";
 // import Weather from "./weather";
 // import { Service } from "./types/service";
 // import openWeather from "./components/openWeather"
@@ -86,13 +87,13 @@ const renderFiveDayForecast = () => {
 }
 
   return (
-    <div>
+    <div style={{display:"flex", justifyContent: "center"}}>
 
-{weather && <div>{weather}
-<div style={{display: "flex", justifyContent: "center", flexDirection: "row", alignContent:"center"}}>
+{weather &&
+<Card><div style={{display: "flex", justifyContent: "center", flexDirection: "row", alignContent:"center"}}>{weather}
 {renderFiveDayForecast()}
-</div>
-</div>}
+</div></Card>
+}
     </div>
   )
 
