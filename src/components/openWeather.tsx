@@ -1,9 +1,7 @@
 import { useContext } from "react";
 import { WeatherContext } from "../context/weatherContext";
 import { format, fromUnixTime } from "date-fns";
-
-const API_KEY = "7c16e6a570b4c78f8d52988d25382b1b";
-const WEATHER_URL = "http://api.openweathermap.org/data/2.5/weather";
+import { API_KEY,  WEATHER_URL } from "../utils/setAuthToken";
 
 const parseDate = (unixDate: number) => {
   const date = fromUnixTime(unixDate);
