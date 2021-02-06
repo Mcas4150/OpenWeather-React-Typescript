@@ -20,9 +20,9 @@ interface Weather {
 }
 
 interface Forecast {
-  temp: number
-  description: string,
-  day: string,
+  temp: number;
+  description: string;
+  day: string;
 }
 
 // const initialWeatherState: Weather = {
@@ -33,7 +33,7 @@ interface Forecast {
 // };
 
 const App: React.FunctionComponent<AllWeather> = (props) => {
-  const [weather, setWeather] = useState<Weather[]>([]);
+  const [weather, setWeather] = useState<any>("");
   const [forecast, setForecast] = useState<any>("");
 
   const parseDate = (unixDate: number) => {
@@ -44,31 +44,30 @@ const App: React.FunctionComponent<AllWeather> = (props) => {
 
   const getCurrentWeather = async () => {
     const response = await fetch(
-      `${WEATHER_URL}?q=London&units=metric&APPID=${API_KEY}`
+      `${WEATHER_URL}?q=Boston&units=imperial&APPID=${API_KEY}`
     );
     const data = await response.json();
-    // const temp = data.main.temp;
-    // let currentWeather: any[] = [];
-    // const [weather] = data.weather;
-    // const description = weather.description;
-    // const day = parseDate(data.dt);
-    // const city = data.name;
-    // console.log(description);
-    // const icon = weather.icon;
-    // currentWeather.push([temp, description, day, city]);
-    // setWeather({ ...weather, currentWeather });
-    setWeather(data);
+    const temp = data.main.temp;
+    const currentWeather: any[] = [];
+    const [weather] = data.weather;
+    const description = weather.description;
+    const day = parseDate(data.dt);
+    const city = data.name;
+    console.log(description);
+    const icon = weather.icon;
+    currentWeather.push([temp, description, day, city, icon]);
+    setWeather(currentWeather);
   };
 
   const getForecast = async () => {
     const response = await fetch(
-      `${FORECAST_URL}?q=London&units=metric&APPID=${API_KEY}`
+      `${FORECAST_URL}?q=Boston&units=imperial&APPID=${API_KEY}`
     );
     const data = await response.json();
     if (data.list) {
       const weatherList = data.list;
       const fiveDayForecast: any[] = [];
-      for (let i = 0; i < weatherList.length; i += 8) {
+      for (let i = 1; i < weatherList.length; i += 8) {
         const date = fromUnixTime(weatherList[i].dt);
         const day = format(date, "EEEEEE");
         const weatherIcon = weatherList[i].weather[0].icon;
@@ -87,17 +86,26 @@ const App: React.FunctionComponent<AllWeather> = (props) => {
 
   const renderWeather = () => {
     if (weather) {
-    const temp = weather.main.temp;
-    // let currentWeather: any[] = [];
-    const [weatherData] = data.weather;
-    const description = weatherData.description;
-    const day = parseDate(data.dt);
-    const city = data.name;
-    console.log(description);
-    // const icon = weather.icon;
-    // currentWeather.push([temp, description, day, city]);
-    setWeather({ ...weather, currentWeather });
-      return <div>weather</div>;
+      const [temp, description, day, city, icon] = weather[0];
+      return (
+        <WeatherInfo>
+          <CityTitle>{city}</CityTitle>
+          <hr />
+          <InfoContainer>
+            <div>
+              <div>{day}</div>
+              <img
+                src={`http://openweathermap.org/img/wn/${icon}.png`}
+                alt="weatherIcon"
+              />
+            </div>
+            <div>
+              <div>{temp}</div>
+              <div>{description}</div>
+            </div>
+          </InfoContainer>
+        </WeatherInfo>
+      );
     }
   };
 
@@ -114,7 +122,7 @@ const App: React.FunctionComponent<AllWeather> = (props) => {
             <p id="Temp">
               {day[2]}
               <span>&deg;</span>
-              <span>C</span>
+              <span>F</span>
             </p>
           </Day>
         );
@@ -123,7 +131,7 @@ const App: React.FunctionComponent<AllWeather> = (props) => {
   };
 
   return (
-    <WeatherContainer>
+    <CardContainer>
       {weather && (
         <WeatherCard>
           <CurrentContainer>{renderWeather()}</CurrentContainer>
@@ -131,7 +139,7 @@ const App: React.FunctionComponent<AllWeather> = (props) => {
           <ForecastContainer>{renderFiveDayForecast()}</ForecastContainer>
         </WeatherCard>
       )}
-    </WeatherContainer>
+    </CardContainer>
   );
 };
 
@@ -139,8 +147,18 @@ const Flex = styled.div`
   display: flex;
 `;
 
-const WeatherContainer = styled(Flex)`
+const WeatherInfo = styled.div`
+  width: 100%;
+`;
+
+const CityTitle = styled(Flex)`
   justify-content: center;
+  font-size: 20px;
+`;
+
+const CardContainer = styled(Flex)`
+  justify-content: center;
+  margin: 15px;
 `;
 
 const Day = styled(Flex)`
@@ -152,6 +170,11 @@ const CurrentContainer = styled(Flex)`
   justify-content: center;
 `;
 
+const InfoContainer = styled(Flex)`
+  flex-direction: row;
+  justify-content: space-evenly;
+`;
+
 const ForecastContainer = styled(Flex)`
   flex-direction: row;
 `;
@@ -161,7 +184,7 @@ const WeatherCard = styled(Card)`
   // justify-content: center;
   flex-direction: column;
   align-content: center;
-  padding: 5px;
+  padding: 10px;
 `;
 
 export default App;
