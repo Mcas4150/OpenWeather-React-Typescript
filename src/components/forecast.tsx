@@ -1,4 +1,6 @@
 import styled from "styled-components";
+// import { useContext } from "react";
+// import { WeatherContext } from "../context/weatherContext";
 
 const Forecast = (props: any) => {
   if (props.forecast) {
@@ -27,24 +29,9 @@ const Flex = styled.div`
   display: flex;
 `;
 
-const WeatherInfo = styled.div`
-  width: 100%;
-`;
-
-const CityTitle = styled(Flex)`
-  justify-content: center;
-  font-size: 20px;
-`;
-
-const InfoContainer = styled(Flex)`
-  flex-direction: row;
-  justify-content: space-evenly;
-`;
-
 const Day = styled(Flex)`
   align-items: center;
   flex-direction: column;
 `;
-
 
 export default Forecast;

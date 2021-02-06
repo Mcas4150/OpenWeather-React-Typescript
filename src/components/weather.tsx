@@ -1,6 +1,15 @@
 import styled from "styled-components";
+// import { FC, ReactNode, useContext, useEffect } from "react";
+// import { WeatherContext } from "../context/weatherContext";
+// import GetCurrentWeather from "./openWeather";
 
 const CurrentWeather = (props: any) => {
+  // const { weather } = useContext<any>(WeatherContext);
+
+  // useEffect(() => {
+  //   GetCurrentWeather();
+  // }, []);
+
   if (props.weather) {
     const [temp, description, day, city, icon] = props.weather[0];
     return (
@@ -16,7 +25,10 @@ const CurrentWeather = (props: any) => {
             />
           </div>
           <div>
-            <div>{temp}</div>
+            <Temperature>
+              {temp} <span>&deg;</span>
+              <span>F</span>
+            </Temperature>
             <div>{description}</div>
           </div>
         </InfoContainer>
@@ -39,6 +51,8 @@ const CityTitle = styled(Flex)`
   justify-content: center;
   font-size: 20px;
 `;
+
+const Temperature = styled.div``;
 
 const InfoContainer = styled(Flex)`
   flex-direction: row;
