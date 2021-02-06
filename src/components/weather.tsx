@@ -18,7 +18,7 @@ const CurrentWeather = (props: any) => {
         <hr />
         <InfoContainer>
           <div>
-            <div>{day}</div>
+            <Day>{day}</Day>
             <img
               src={`http://openweathermap.org/img/wn/${icon}.png`}
               alt="weatherIcon"
@@ -26,10 +26,11 @@ const CurrentWeather = (props: any) => {
           </div>
           <div>
             <Temperature>
-              {temp} <span>&deg;</span>
+              {temp}
+              <span>&deg;</span>
               <span>F</span>
             </Temperature>
-            <div>{description}</div>
+            <Description>{description}</Description>
           </div>
         </InfoContainer>
       </WeatherInfo>
@@ -43,6 +44,10 @@ const Flex = styled.div`
   display: flex;
 `;
 
+const Text = styled.div`
+  font-size: 18px;
+`;
+
 const WeatherInfo = styled.div`
   width: 100%;
 `;
@@ -52,7 +57,13 @@ const CityTitle = styled(Flex)`
   font-size: 20px;
 `;
 
-const Temperature = styled.div``;
+const Day = styled(Text)``;
+
+const Temperature = styled(Text)`
+  margin-bottom: 10px;
+`;
+
+const Description = styled(Text)``;
 
 const InfoContainer = styled(Flex)`
   flex-direction: row;

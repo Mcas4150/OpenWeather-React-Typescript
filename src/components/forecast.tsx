@@ -4,20 +4,27 @@ import styled from "styled-components";
 
 const Forecast = (props: any) => {
   if (props.forecast) {
-    return props.forecast.map((day: string) => {
+    return props.forecast.map((data: any) => {
+      const [day, icon, description, tempMin, tempMax] = data;
       return (
-        <Day key={day[0]}>
-          <p>{day[0]}</p>
+        <Item key={day}>
+          <Day>{day}</Day>
           <img
-            src={`http://openweathermap.org/img/wn/${day[1]}.png`}
+            src={`http://openweathermap.org/img/wn/${icon}.png`}
             alt="weatherIcon"
           />
-          <p id="Temp">
-            {day[2]}
+          <Description>{description}</Description>
+          <TempMax>
+            {tempMax}
             <span>&deg;</span>
             <span>F</span>
-          </p>
-        </Day>
+          </TempMax>
+          <TempMin>
+            {tempMin}
+            <span>&deg;</span>
+            <span>F</span>
+          </TempMin>
+        </Item>
       );
     });
   } else {
@@ -29,7 +36,25 @@ const Flex = styled.div`
   display: flex;
 `;
 
-const Day = styled(Flex)`
+const Text = styled.div`
+  font-size: 15px;
+`;
+
+const Day = styled(Text)``;
+
+const TempMin = styled(Text)`
+  color: blue;
+`;
+
+const TempMax = styled(Text)`
+  color: red;
+`;
+
+const Description = styled(Text)`
+  margin-bottom: 5px;
+`;
+
+const Item = styled(Flex)`
   align-items: center;
   flex-direction: column;
 `;

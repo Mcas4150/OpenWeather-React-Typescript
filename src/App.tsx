@@ -48,10 +48,12 @@ const App: React.FunctionComponent<AllWeather> = () => {
       for (let i = 1; i < weatherList.length; i += 8) {
         const date = fromUnixTime(weatherList[i].dt);
         const day = format(date, "EEEEEE");
-        const weatherIcon = weatherList[i].weather[0].icon;
-        const Temp = Math.floor(weatherList[i].main.temp);
+        const icon = weatherList[i].weather[0].icon;
+        const description = weatherList[i].weather[0].main;
+        const tempMin = Math.floor(weatherList[i].main.temp_min);
+        const tempMax = Math.floor(weatherList[i].main.temp_max);
 
-        fiveDayForecast.push([day, weatherIcon, Temp]);
+        fiveDayForecast.push([day, icon, description, tempMin, tempMax]);
       }
       setForecast(fiveDayForecast);
     }
