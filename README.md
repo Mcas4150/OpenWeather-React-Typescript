@@ -1,4 +1,4 @@
-![App Demo Image](./pubic/AppDemo.jpg)
+![App Demo Image](./public/AppDemo.jpg)
 
 # OpenWeatherApp Demo
 
