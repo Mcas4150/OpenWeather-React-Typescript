@@ -4,6 +4,8 @@ import { Card } from "@material-ui/core";
 import styled from "styled-components";
 import { API_KEY, FORECAST_URL, WEATHER_URL } from "./utils/setAuthToken";
 import { format, fromUnixTime } from "date-fns";
+import CurrentWeather from "./components/weather";
+import Forecast from "./components/forecast";
 
 // interface State {
 //   temp: { [key: string]: string };
@@ -53,7 +55,6 @@ const App: React.FunctionComponent<AllWeather> = (props) => {
     const description = weather.description;
     const day = parseDate(data.dt);
     const city = data.name;
-    console.log(description);
     const icon = weather.icon;
     currentWeather.push([temp, description, day, city, icon]);
     setWeather(currentWeather);
@@ -84,59 +85,19 @@ const App: React.FunctionComponent<AllWeather> = (props) => {
     getForecast();
   }, []);
 
-  const renderWeather = () => {
-    if (weather) {
-      const [temp, description, day, city, icon] = weather[0];
-      return (
-        <WeatherInfo>
-          <CityTitle>{city}</CityTitle>
-          <hr />
-          <InfoContainer>
-            <div>
-              <div>{day}</div>
-              <img
-                src={`http://openweathermap.org/img/wn/${icon}.png`}
-                alt="weatherIcon"
-              />
-            </div>
-            <div>
-              <div>{temp}</div>
-              <div>{description}</div>
-            </div>
-          </InfoContainer>
-        </WeatherInfo>
-      );
-    }
-  };
 
-  const renderFiveDayForecast = () => {
-    if (forecast) {
-      return forecast.map((day: string) => {
-        return (
-          <Day key={day[0]}>
-            <p>{day[0]}</p>
-            <img
-              src={`http://openweathermap.org/img/wn/${day[1]}.png`}
-              alt="weatherIcon"
-            />
-            <p id="Temp">
-              {day[2]}
-              <span>&deg;</span>
-              <span>F</span>
-            </p>
-          </Day>
-        );
-      });
-    }
-  };
 
   return (
     <CardContainer>
       {weather && (
         <WeatherCard>
-          <CurrentContainer>{renderWeather()}</CurrentContainer>
+          <CurrentContainer>
+            <CurrentWeather weather={weather} />
+          </CurrentContainer>
 
-          <ForecastContainer>{renderFiveDayForecast()}</ForecastContainer>
+          <ForecastContainer>
+            <Forecast forecast={forecast} />
+          </ForecastContainer>
         </WeatherCard>
       )}
     </CardContainer>
@@ -147,33 +108,18 @@ const Flex = styled.div`
   display: flex;
 `;
 
-const WeatherInfo = styled.div`
-  width: 100%;
-`;
 
-const CityTitle = styled(Flex)`
-  justify-content: center;
-  font-size: 20px;
-`;
 
 const CardContainer = styled(Flex)`
   justify-content: center;
   margin: 15px;
 `;
 
-const Day = styled(Flex)`
-  align-items: center;
-  flex-direction: column;
-`;
-
 const CurrentContainer = styled(Flex)`
   justify-content: center;
 `;
 
-const InfoContainer = styled(Flex)`
-  flex-direction: row;
-  justify-content: space-evenly;
-`;
+
 
 const ForecastContainer = styled(Flex)`
   flex-direction: row;
