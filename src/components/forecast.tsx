@@ -1,8 +1,7 @@
 import styled from "styled-components";
 import { useState, useEffect } from "react";
 import { API_KEY, FORECAST_URL } from "../utils/setAuthToken";
-import { format, fromUnixTime } from "date-fns";
-
+import { parseDate } from "../utils/shared";
 
 const Forecast = () => {
   const [forecast, setForecast] = useState<any>("");
@@ -13,12 +12,6 @@ const Forecast = () => {
   //   description: "",
   //   icon: "",
   // });
-
-  const parseDate = (unixDate: number) => {
-    const date = fromUnixTime(unixDate);
-    const day = format(date, "EEEE");
-    return day;
-  };
 
   const getForecast = async () => {
     const response = await fetch(
@@ -44,8 +37,7 @@ const Forecast = () => {
 
   useEffect(() => {
     getForecast();
-  }, [])
-
+  }, []);
 
   if (forecast) {
     return forecast.map((data: any) => {

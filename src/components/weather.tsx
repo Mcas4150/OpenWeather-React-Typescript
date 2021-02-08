@@ -1,7 +1,8 @@
 import styled from "styled-components";
 import { useState, useEffect } from "react";
 import { API_KEY, WEATHER_URL } from "../utils/setAuthToken";
-import { format, fromUnixTime } from "date-fns";
+import { parseDate } from "../utils/shared"
+
 
 const CurrentWeather = (props: any) => {
   const [weather, setWeather] = useState<Weather | null>({
@@ -12,11 +13,6 @@ const CurrentWeather = (props: any) => {
     description: "",
   });
 
-  const parseDate = (unixDate: number) => {
-    const date = fromUnixTime(unixDate);
-    const day = format(date, "EEEE");
-    return day;
-  };
 
   const getCurrentWeather = async () => {
     const response = await fetch(
