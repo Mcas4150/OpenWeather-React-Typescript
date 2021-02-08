@@ -1,36 +1,63 @@
 import styled from "styled-components";
-// import { FC, ReactNode, useContext, useEffect } from "react";
-// import { WeatherContext } from "../context/weatherContext";
-// import GetCurrentWeather from "./openWeather";
+import { useState, useEffect } from "react";
+import { API_KEY, WEATHER_URL } from "../utils/setAuthToken";
+import { format, fromUnixTime } from "date-fns";
 
 const CurrentWeather = (props: any) => {
-  // const { weather } = useContext<any>(WeatherContext);
+  const [weather, setWeather] = useState<Weather | null>({
+    day: "",
+    temp: 0,
+    city: "",
+    icon: "",
+    description: "",
+  });
 
-  // useEffect(() => {
-  //   GetCurrentWeather();
-  // }, []);
+  const parseDate = (unixDate: number) => {
+    const date = fromUnixTime(unixDate);
+    const day = format(date, "EEEE");
+    return day;
+  };
 
-  if (props.weather) {
-    const [temp, description, day, city, icon] = props.weather[0];
+  const getCurrentWeather = async () => {
+    const response = await fetch(
+      `${WEATHER_URL}?q=Boston&units=imperial&APPID=${API_KEY}`
+    );
+    const data = await response.json();
+    const [weather] = data.weather;
+
+    setWeather({
+      temp: data.main.temp,
+      day: parseDate(data.dt),
+      city: data.name,
+      icon: weather.icon,
+      description: weather.main,
+    });
+  };
+
+  useEffect(() => {
+    getCurrentWeather();
+  }, []);
+
+  if (weather) {
     return (
       <WeatherInfo>
-        <CityTitle>{city}</CityTitle>
+        <CityTitle>{weather.city}</CityTitle>
         <hr />
         <InfoContainer>
           <div>
-            <Day>{day}</Day>
+            <Day>{weather.day}</Day>
             <img
-              src={`http://openweathermap.org/img/wn/${icon}.png`}
+              src={`http://openweathermap.org/img/wn/${weather.icon}.png`}
               alt="weatherIcon"
             />
           </div>
           <div>
             <Temperature>
-              {temp}
+              {weather.temp}
               <span>&deg;</span>
               <span>F</span>
             </Temperature>
-            <Description>{description}</Description>
+            <Description>{weather.description}</Description>
           </div>
         </InfoContainer>
       </WeatherInfo>

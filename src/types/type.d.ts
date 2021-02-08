@@ -1,10 +1,15 @@
-interface IWeather {
-  temp: number;
-  city: string;
-  description: string;
+interface Weather {
+  day: string,
+  temp: number,
+  city: string,
+  description: string,
+  icon: string,
 }
 
-type ContextType = {
-  weather: IWeather[];
-  setWeather: (weather: IWeather) => void;
-};
+interface Forecast {
+  day: string,
+  tempMax: number,
+  tempMin: number,
+  description: string,
+  icon: string
+}
