@@ -22,8 +22,7 @@ const Forecast = () => {
       const weatherList = data.list;
       const fiveDayForecast: any[] = [];
       for (let i = 1; i < weatherList.length; i += 8) {
-        const date = fromUnixTime(weatherList[i].dt);
-        const day = format(date, "EEEEEE");
+        const day = parseDate(weatherList[i].dt, "EEEEEE");
         const icon = weatherList[i].weather[0].icon;
         const description = weatherList[i].weather[0].main;
         const tempMin = Math.floor(weatherList[i].main.temp_min);

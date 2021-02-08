@@ -1,11 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import "./App.css";
 import { Card } from "@material-ui/core";
 import styled from "styled-components";
-import { API_KEY, FORECAST_URL, WEATHER_URL } from "./utils/setAuthToken";
-import { format, fromUnixTime } from "date-fns";
 import CurrentWeather from "./components/weather";
-
 import Forecast from "./components/forecast";
 
 const App = () => {
@@ -16,7 +13,6 @@ const App = () => {
         <CurrentContainer>
           <CurrentWeather />
         </CurrentContainer>
-
         <ForecastContainer>
           <Forecast />
         </ForecastContainer>

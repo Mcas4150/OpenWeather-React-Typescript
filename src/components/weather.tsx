@@ -23,7 +23,7 @@ const CurrentWeather = (props: any) => {
 
     setWeather({
       temp: data.main.temp,
-      day: parseDate(data.dt),
+      day: parseDate(data.dt, "EEEE"),
       city: data.name,
       icon: weather.icon,
       description: weather.main,
